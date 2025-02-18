@@ -12,5 +12,4 @@ router.get("/mycategories/:categoryId", (req, res, next) => {
     getAllCategoriesById(req, res, next).catch(next);
 });
   
-  
 module.exports = router;
