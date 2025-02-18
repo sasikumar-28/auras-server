@@ -4,11 +4,7 @@ const tanyaShoppingAssistant = async (req, res, next) => {
   try {
     const { userId, pdp, whom, registered } = req.query;
     const { prompt, storeCode } = req.body;
-
-    // console.log("userQuery", userId, pdp, whom, registered);
-    // console.log("prompt", prompt);
-    // console.log("storecode", storeCode);
-
+    
     if ( !userId || !pdp || !whom || !registered) {
       res.status(400).json({ error: "Something is missing" });
     }
