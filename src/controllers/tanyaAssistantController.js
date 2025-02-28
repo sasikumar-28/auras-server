@@ -14,7 +14,7 @@ const tanyaShoppingAssistant = async (req, res, next) => {
     console.log(URL,"url")
     const response = await axios.post(
       URL,
-      { prompt, storeCode }, // Body
+      { prompt, storeCode },
       {
         headers: {
           "Content-Type": "application/json",
