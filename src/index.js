@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth.js");
 const tanyaShoppingAssistant = require("./routes/tanyaShoppingAssistant.js");
 const searchRoutes = require("./routes/search.js");
 const category = require("./routes/category.js");
+const fetchingLogo= require("./routes/fetchingLogo.js");
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use("/api", authRoutes);
 app.use("/api", tanyaShoppingAssistant);
 app.use("/api", searchRoutes);
 app.use("/api", category);
+app.use("/api", fetchingLogo );
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>

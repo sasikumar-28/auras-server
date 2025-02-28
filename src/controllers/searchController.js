@@ -1,6 +1,9 @@
 const axios = require("axios");
 const aws4 = require("aws4");
 
+
+
+
 const search = async (req, res) => {
     
     const { query } = req.query;
@@ -30,9 +33,11 @@ const search = async (req, res) => {
       // Make request to AWS
       const response = await axios.get(`${baseUrl}?query=${query}`, {
         headers: options.headers,
+        timeout:20000
     });
     res.json(response.data);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

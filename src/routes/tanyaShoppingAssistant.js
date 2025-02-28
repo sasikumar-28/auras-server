@@ -1,5 +1,5 @@
 const express = require("express");
-const { tanyaShoppingAssistant } = require("../controllers/tanyaAssistantController.js");
+const { tanyaShoppingAssistant, getSearchProduct } = require("../controllers/tanyaAssistantController.js");
 
 const router = express.Router();
 
@@ -7,5 +7,9 @@ const router = express.Router();
 router.post("/web-bff/assistant", (req, res, next) => {
   tanyaShoppingAssistant(req, res, next).catch(next);
 });
+
+router.get("/search-product",(req,res,next) => {
+  getSearchProduct(req,res,next).catch(next);
+})
 
 module.exports = router;
