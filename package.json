@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "aws4": "^1.13.2",
+    "aws4-axios": "^3.4.0",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

@@ -6,5 +6,4 @@ router.get("/search", (req, res, next) => {
     search(req, res, next).catch(next);
   });
 
-
 module.exports = router;
