@@ -1,9 +1,6 @@
 const axios = require("axios");
 const aws4 = require("aws4");
 
-
-
-
 const search = async (req, res) => {
     
     const { query } = req.query;

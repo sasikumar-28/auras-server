@@ -61,6 +61,84 @@ const getSearchProduct = async (req, res, next) => {
   }
 };
 
+const tanyaShoppingAssistantStream = async (req, res, next) => {
+  try {
+    const { userId, pdp, whom, registered } = req.query;
+    const { prompt, storeCode, flowId, flowAliasId } = req.body;
+
+    // Validate required fields
+    if (!userId || !pdp || !whom || !registered || !prompt || !storeCode || !flowId || !flowAliasId) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const URL = "https://dev.aurascc.net/web-bff/invoke/stream";
+
+    // Make a request to the external API
+    const response = await axios.post(
+      URL,
+      {
+        flowId, // Use from request body, not process.env
+        flowAliasId,
+        input: {
+          userPrompt: prompt,
+          whom: whom,
+        },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: req.header("Authorization"),
+        },
+        params: { userId, pdp, whom, registered }, // Ensure params are correctly placed
+        responseType: "stream",
+        timeout: 20000,
+      }
+    );
+
+    // Set headers for the client response
+    res.setHeader("Content-Type", "application/json");
+
+    // Stream response data to the client
+    response.data.pipe(res);
+
+    // Handle stream end
+    response.data.on("end", () => {
+      console.log("Stream ended successfully");
+      res.end();
+    });
+
+    // Handle stream errors
+    response.data.on("error", (err) => {
+      console.error("Stream error:", err);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Streaming error" });
+      }
+      res.end();
+    });
+
+    // Handle client disconnection
+    req.on("close", () => {
+      console.log("Client disconnected");
+      if (response.request) {
+        response.request.abort(); // Properly abort the request
+      }
+    });
+  } catch (error) {
+    console.error("Error:", error.message || error);
+
+    if (error.response) {
+      console.error("Response error:", error.response.status, error.response.data);
+      return res.status(error.response.status).json({ error: error.response.data });
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+      return res.status(500).json({ error: "No response received from the external API" });
+    } else {
+      console.error("Request setup error:", error.message);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  }
+};
 
 
-module.exports = { tanyaShoppingAssistant,getSearchProduct };
+
+module.exports = { tanyaShoppingAssistant,getSearchProduct ,tanyaShoppingAssistantStream};
