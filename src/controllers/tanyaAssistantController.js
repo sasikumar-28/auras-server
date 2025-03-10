@@ -41,8 +41,8 @@ const getSearchProduct = async (req, res, next) => {
     region: "eu-north-1",
     service: "execute-api",
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID, // Load from .env
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, // Load from .env
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
     },
   });
 
@@ -50,7 +50,6 @@ const getSearchProduct = async (req, res, next) => {
 
   try {
     const url = `https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?query=${search}`;
-    console.log(`Requesting searchproduct url: ${url}`);
 
     // Make request using client (ensures AWS signing is applied)
     const response = await client.get(url);
@@ -61,6 +60,50 @@ const getSearchProduct = async (req, res, next) => {
   }
 };
 
+const tanyaShoppingAssistantStream = async (req, res, next) => {
+  try {
+    const externalApiUrl = "https://dev.aurascc.net/web-bff/invoke/stream";
+
+    // Extract necessary data from the request body
+    const { flowId, flowAliasId, input } = req.body;
+
+    // Make request to external API with streaming enabled
+    const response = await axios.post(
+      externalApiUrl,
+      { flowId, flowAliasId, input },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: req.header("Authorization"), // Pass authorization from the client
+        },
+        responseType: "stream", // Important for streaming
+      }
+    );
+
+    // Set response headers for streaming
+    res.setHeader("Content-Type", "application/json");
+
+    // Pipe the external API response directly to the client
+    response.data.pipe(res);
+
+    // Handle stream completion
+    response.data.on("end", () => {
+      console.log("Stream ended successfully.");
+      res.end();
+    });
+
+    // Handle errors
+    response.data.on("error", (error) => {
+      console.error("Stream error:", error);
+      res.status(500).json({ error: "Stream error occurred" });
+    });
+  } catch (error) {
+    console.error("Error fetching stream:", error);
+    res.status(500).json({ error: "Failed to fetch stream" });
+  }
+};
 
 
-module.exports = { tanyaShoppingAssistant,getSearchProduct };
+
+
+module.exports = { tanyaShoppingAssistant,getSearchProduct ,tanyaShoppingAssistantStream};
