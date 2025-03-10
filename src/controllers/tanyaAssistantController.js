@@ -63,81 +63,47 @@ const getSearchProduct = async (req, res, next) => {
 
 const tanyaShoppingAssistantStream = async (req, res, next) => {
   try {
-    const { userId, pdp, whom, registered } = req.query;
-    const { prompt, storeCode, flowId, flowAliasId } = req.body;
+    const externalApiUrl = "https://dev.aurascc.net/web-bff/invoke/stream";
 
-    // Validate required fields
-    if (!userId || !pdp || !whom || !registered || !prompt || !storeCode || !flowId || !flowAliasId) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
+    // Extract necessary data from the request body
+    const { flowId, flowAliasId, input } = req.body;
 
-    const URL = "https://dev.aurascc.net/web-bff/invoke/stream";
-
-    // Make a request to the external API
+    // Make request to external API with streaming enabled
     const response = await axios.post(
-      URL,
-      {
-        flowId, // Use from request body, not process.env
-        flowAliasId,
-        input: {
-          userPrompt: prompt,
-          whom: whom,
-        },
-      },
+      externalApiUrl,
+      { flowId, flowAliasId, input },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: req.header("Authorization"),
+          Authorization: req.header("Authorization"), // Pass authorization from the client
         },
-        params: { userId, pdp, whom, registered }, // Ensure params are correctly placed
-        responseType: "stream",
-        timeout: 20000,
+        responseType: "stream", // Important for streaming
       }
     );
 
-    // Set headers for the client response
+    // Set response headers for streaming
     res.setHeader("Content-Type", "application/json");
 
-    // Stream response data to the client
+    // Pipe the external API response directly to the client
     response.data.pipe(res);
 
-    // Handle stream end
+    // Handle stream completion
     response.data.on("end", () => {
-      console.log("Stream ended successfully");
+      console.log("Stream ended successfully.");
       res.end();
     });
 
-    // Handle stream errors
-    response.data.on("error", (err) => {
-      console.error("Stream error:", err);
-      if (!res.headersSent) {
-        res.status(500).json({ error: "Streaming error" });
-      }
-      res.end();
-    });
-
-    // Handle client disconnection
-    req.on("close", () => {
-      console.log("Client disconnected");
-      if (response.request) {
-        response.request.abort(); // Properly abort the request
-      }
+    // Handle errors
+    response.data.on("error", (error) => {
+      console.error("Stream error:", error);
+      res.status(500).json({ error: "Stream error occurred" });
     });
   } catch (error) {
-    console.error("Error:", error.message || error);
-
-    if (error.response) {
-      console.error("Response error:", error.response.status, error.response.data);
-      return res.status(error.response.status).json({ error: error.response.data });
-    } else if (error.request) {
-      console.error("No response received:", error.request);
-      return res.status(500).json({ error: "No response received from the external API" });
-    } else {
-      console.error("Request setup error:", error.message);
-      return res.status(500).json({ error: "Internal server error" });
-    }
+    console.error("Error fetching stream:", error);
+    res.status(500).json({ error: "Failed to fetch stream" });
   }
 };
+
 
 
 

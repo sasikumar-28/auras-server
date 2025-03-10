@@ -3,24 +3,19 @@ const {aws4Interceptor} = require("aws4-axios");
 
 const getAllCategories = async (req, res, next) => {
   try {
-    
-    
-    const url = `https://dev.aurascc.net/web-bff/categories`;
-    // if (storeCode === "claires") {
-    //   url += `?storeCode=${storeCode}`;
-    // }
-    // console.log(url, "category url");
+    const {storeCode} = req.query
+    const url = `https://dev.aurascc.net/web-bff/categories?storeCode=${storeCode}`;
     const response = await axios.get(url, {
       headers: {
         "Content-Type": "application/json",
         Authorization: req.header("Authorization"),
       },
     });
-    // console.log(response.data, "getAllCategories");
+
     res.json(response?.data);
   } catch (error) {
     console.error("Error:", error.message || error);
-    next(error); // Pass error to Expr
+    next(error);
   }
 };
 
@@ -60,8 +55,8 @@ const getProductByCategory = async (req, res, next) => {
     region: "eu-north-1",
     service: "execute-api",
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID, // Load from .env
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, // Load from .env
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
   });
 
@@ -69,9 +64,8 @@ const getProductByCategory = async (req, res, next) => {
 
   try {
     const url = `https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?categoryId=${categoryId}`;
-    // console.log(`Requesting: ${url}`);
 
-    // Make request using client (ensures AWS signing is applied)
+    // Make request using client
     const response = await client.get(url);
     res.json(response.data);
   } catch (error) {
