@@ -41,8 +41,8 @@ const getSearchProduct = async (req, res, next) => {
     region: "eu-north-1",
     service: "execute-api",
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID, // Load from .env
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, // Load from .env
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
     },
   });
 
