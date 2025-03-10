@@ -50,7 +50,6 @@ const getSearchProduct = async (req, res, next) => {
 
   try {
     const url = `https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?query=${search}`;
-    console.log(`Requesting searchproduct url: ${url}`);
 
     // Make request using client (ensures AWS signing is applied)
     const response = await client.get(url);
