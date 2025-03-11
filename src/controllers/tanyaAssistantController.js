@@ -11,7 +11,6 @@ const tanyaShoppingAssistant = async (req, res, next) => {
     }
 
     const URL = `https://dev.aurascc.net/web-bff/assistant?userId=${userId}&pdp=${pdp}&whom=${whom}`;
-    console.log(URL,"url")
     const response = await axios.post(
       URL,
       { prompt, storeCode },
