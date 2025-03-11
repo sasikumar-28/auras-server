@@ -45,7 +45,7 @@ const getAllCategories = async (req, res, next) => {
 // };
 
 const getProductByCategory = async (req, res, next) => {
-  const { categoryId } = req.params;
+  const { categoryId,storeCode } = req.params;
 
   // Create an Axios instance
   const client = axios.create({ timeout: 20000 });
@@ -63,10 +63,11 @@ const getProductByCategory = async (req, res, next) => {
   client.interceptors.request.use(interceptor); // Attach interceptor
 
   try {
-    const url = `https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?categoryId=${categoryId}`;
-
+    // const url = 
+    const url = storeCode === "applebees"? `https://jdtfm1va02.execute-api.eu-north-1.amazonaws.com/dev/products/search?categoryId=${categoryId}`:`https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?categoryId=${categoryId}`;
     // Make request using client
     const response = await client.get(url);
+    console.log(response.data,'response')
     res.json(response.data);
   } catch (error) {
     console.error("Error fetching products:", error.response?.data || error.message);

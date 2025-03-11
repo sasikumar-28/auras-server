@@ -23,7 +23,7 @@ app.use("/api", searchRoutes);
 app.use("/api", category);
 app.use("/api", fetchingLogo );
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4001;
 app.listen(PORT, () =>
   console.log(`Server running on port http://localhost:${PORT}`)
 );
