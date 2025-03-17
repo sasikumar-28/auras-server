@@ -102,7 +102,4 @@ const tanyaShoppingAssistantStream = async (req, res, next) => {
   }
 };
 
-
-
-
 module.exports = { tanyaShoppingAssistant,getSearchProduct ,tanyaShoppingAssistantStream};
