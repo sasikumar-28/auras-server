@@ -13,7 +13,6 @@ const getLogo = async (req, res) => {
         Authorization: req.header("Authorization")
       }
     });
-    
     res.json(response?.data);
 
   } catch (error) {
