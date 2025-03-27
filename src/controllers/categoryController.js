@@ -44,8 +44,9 @@ const getAllCategories = async (req, res, next) => {
 //   }
 // };
 
-const getProductByCategory = async (req, res, next) => {
-  const { categoryId,storeCode } = req.params;
+const getProductByCategory = async (req, res) => {
+  const { categoryId } = req.params;
+  const { storeCode, page = 0, hitsPerPage = 4 } = req.query;
 
   // Create an Axios instance
   const client = axios.create({ timeout: 20000 });
@@ -60,14 +61,21 @@ const getProductByCategory = async (req, res, next) => {
     },
   });
 
-  client.interceptors.request.use(interceptor); // Attach interceptor
+  client.interceptors.request.use(interceptor);
 
   try {
-    // const url = 
-    const url = storeCode === "applebees"? `https://jdtfm1va02.execute-api.eu-north-1.amazonaws.com/dev/products/search?categoryId=${categoryId}`:`https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?categoryId=${categoryId}`;
-    // Make request using client
+    const baseUrl =
+      storeCode === "applebees"
+        ? "https://jdtfm1va02.execute-api.eu-north-1.amazonaws.com/dev/products/search"
+        : "https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search";
+
+    // Construct URL with pagination params
+    const url = `${baseUrl}?categoryId=${categoryId}&hitsPerPage=${hitsPerPage}&page=${page}`;
+
+    // Make API request
     const response = await client.get(url);
-    console.log(response.data,'response')
+    console.log(response.data, "response");
+
     res.json(response.data);
   } catch (error) {
     console.error("Error fetching products:", error.response?.data || error.message);
