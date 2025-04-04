@@ -1,9 +1,9 @@
 const axios = require("axios");
-const {aws4Interceptor} = require("aws4-axios");
+const { aws4Interceptor } = require("aws4-axios");
 
 const getAllCategories = async (req, res, next) => {
   try {
-    const {storeCode} = req.query
+    const { storeCode } = req.query
     const url = `https://dev.aurascc.net/web-bff/categories?storeCode=${storeCode}`;
     const response = await axios.get(url, {
       headers: {
@@ -46,7 +46,7 @@ const getAllCategories = async (req, res, next) => {
 
 const getProductByCategory = async (req, res) => {
   const { categoryId } = req.params;
-  const { storeCode, page = 0, hitsPerPage = 4 } = req.query;
+  const { storeCode, page = 0, hitsPerPage = 4, priceRange, ratingRange } = req.query;
 
   // Create an Axios instance
   const client = axios.create({ timeout: 20000 });
@@ -69,12 +69,29 @@ const getProductByCategory = async (req, res) => {
         ? "https://jdtfm1va02.execute-api.eu-north-1.amazonaws.com/dev/products/search"
         : "https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search";
 
-    // Construct URL with pagination params
-    const url = `${baseUrl}?categoryId=${categoryId}&hitsPerPage=${hitsPerPage}&page=${page}`;
+    // Construct query parameters dynamically
+    const queryParams = new URLSearchParams({
+      categoryId,
+      hitsPerPage: hitsPerPage.toString(),
+      page: page.toString(),
+    });
+
+    // Add priceRange if provided
+    if (priceRange) {
+      queryParams.append("priceRange", priceRange);
+    }
+
+    // Add ratingRange if provided
+    if (ratingRange && ratingRange !== "0TO5") {
+      queryParams.append("ratingRange", ratingRange);
+    }
+
+    // Construct full URL
+    const url = `${baseUrl}?${queryParams.toString()}`;
 
     // Make API request
     const response = await client.get(url);
-    console.log(response.data, "response");
+    // console.log(response.data, "response");
 
     res.json(response.data);
   } catch (error) {
@@ -82,6 +99,7 @@ const getProductByCategory = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch products" });
   }
 };
+
 
 module.exports = {
   getAllCategories,
