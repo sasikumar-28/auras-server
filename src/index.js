@@ -7,6 +7,7 @@ const searchRoutes = require("./routes/search.js");
 const category = require("./routes/category.js");
 const fetchingLogo= require("./routes/fetchingLogo.js");
 const account= require("./routes/account.js");
+const order= require("./routes/order.js");
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use("/api", searchRoutes);
 app.use("/api", category);
 app.use("/api", fetchingLogo );
 app.use("/api", account );
+app.use("/api", order );
 
 const PORT = process.env.PORT || 4001;
 app.listen(PORT, () =>

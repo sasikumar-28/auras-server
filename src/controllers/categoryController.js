@@ -14,7 +14,6 @@ const getAllCategories = async (req, res, next) => {
 
     res.json(response?.data);
   } catch (error) {
-    console.error("Error:", error.message || error);
     next(error);
   }
 };
@@ -74,11 +73,8 @@ const getProductByCategory = async (req, res) => {
 
     // Make API request
     const response = await client.get(url);
-    console.log(response.data, "response");
-
     res.json(response.data);
   } catch (error) {
-    console.error("Error fetching products:", error.response?.data || error.message);
     res.status(500).json({ error: "Failed to fetch products" });
   }
 };
