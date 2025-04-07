@@ -16,7 +16,6 @@ const getLogo = async (req, res) => {
     res.json(response?.data);
 
   } catch (error) {
-    console.error("❌ Error fetching logo:", error.message || error);
     if (error.response) {
       console.error("🛑 API Error Response:", {
         status: error.response.status,
