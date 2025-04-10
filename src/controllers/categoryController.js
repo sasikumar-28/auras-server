@@ -63,14 +63,7 @@ const getProductByCategory = async (req, res) => {
   client.interceptors.request.use(interceptor);
 
   try {
-    let baseUrl =
-      storeCode === "applebees"
-        ? "https://jdtfm1va02.execute-api.eu-north-1.amazonaws.com/dev/products/search"
-        : "https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search";
-
-        if(storeCode === "chemistwarehouse") {
-          baseUrl = "https://mo1d7se1uc.execute-api.eu-north-1.amazonaws.com/dev/products/search"
-        }
+    const baseUrl = req.headers["x-search-endpoint"];
 
     // Construct query parameters dynamically
     const queryParams = new URLSearchParams({
