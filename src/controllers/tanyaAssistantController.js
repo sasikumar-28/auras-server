@@ -1,12 +1,12 @@
 const axios = require("axios");
-const {aws4Interceptor} = require("aws4-axios");
+const { aws4Interceptor } = require("aws4-axios");
 
 const tanyaShoppingAssistant = async (req, res, next) => {
   try {
-    const { userId, pdp, whom,  } = req.query;
+    const { userId, pdp, whom } = req.query;
     const { prompt, storeCode } = req.body;
-    
-    if ( !userId || !pdp || !whom ) {
+
+    if (!userId || !pdp || !whom) {
       res.status(400).json({ error: "Something is missing" });
     }
 
@@ -41,7 +41,7 @@ const getSearchProduct = async (req, res, next) => {
     service: "execute-api",
     credentials: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
   });
 
@@ -54,18 +54,21 @@ const getSearchProduct = async (req, res, next) => {
     const response = await client.get(url);
     res.json(response.data);
   } catch (error) {
-    console.error("Error fetching products:", error.response?.data || error.message);
+    console.error(
+      "Error fetching products:",
+      error.response?.data || error.message
+    );
     res.status(500).json({ error: "Failed to fetch products" });
   }
 };
 
 const tanyaShoppingAssistantStream = async (req, res, next) => {
   try {
-    const externalApiUrl = "https://dev.aurascc.net/web-bff/invoke/stream";
+    const { application, userId, registered } = req.query;
+    const externalApiUrl = `https://dev.aurascc.net/web-bff/invoke/stream?application=${application}&userId=${userId}&registered=${registered}`;
 
-    // Extract necessary data from the request body
     const { flowId, flowAliasId, input } = req.body;
-
+    console.log(externalApiUrl, "ext");
     // Make request to external API with streaming enabled
     const response = await axios.post(
       externalApiUrl,
@@ -102,4 +105,8 @@ const tanyaShoppingAssistantStream = async (req, res, next) => {
   }
 };
 
-module.exports = { tanyaShoppingAssistant,getSearchProduct ,tanyaShoppingAssistantStream};
+module.exports = {
+  tanyaShoppingAssistant,
+  getSearchProduct,
+  tanyaShoppingAssistantStream,
+};
