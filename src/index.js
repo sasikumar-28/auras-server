@@ -9,7 +9,7 @@ const fetchingLogo= require("./routes/fetchingLogo.js");
 const account= require("./routes/account.js");
 const order= require("./routes/order.js");
 const productRoute = require("./routes/product.js")
-
+require("./warmup");
 
 dotenv.config();
 
