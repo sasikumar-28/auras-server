@@ -15,13 +15,13 @@ const interceptor = aws4Interceptor({
 
 client.interceptors.request.use(interceptor);
 
-// Run every 5 minutes
-cron.schedule("*/5 * * * *", async () => {
-	try {
-		const warmupUrl = "https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?query=warmup";
-		const res = await client.get(warmupUrl);
-		console.log("Warmup ping successful at", new Date().toISOString());
-	} catch (err) {
-		console.warn("Warmup ping failed:", err);
-	}
-});
+// // Run every 5 minutes
+// cron.schedule("*/5 * * * *", async () => {
+// 	try {
+// 		const warmupUrl = "https://kf22v0ym9k.execute-api.eu-north-1.amazonaws.com/Dev/products/search?query=warmup";
+// 		const res = await client.get(warmupUrl);
+// 		console.log("Warmup ping successful at", new Date().toISOString());
+// 	} catch (err) {
+// 		console.warn("Warmup ping failed:", err);
+	// }
+// });
