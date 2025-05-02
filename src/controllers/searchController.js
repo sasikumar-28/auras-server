@@ -28,7 +28,6 @@ const search = async (req, res) => {
 
     const response = await axios.get(`${baseUrl}?query=${query}`, {
       headers: options.headers,
-      timeout: 20000,
       responseType: "stream",
     });
     res.setHeader("Content-Type", "application/json");
